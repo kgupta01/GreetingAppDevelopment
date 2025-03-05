@@ -6,6 +6,7 @@ import com.example.GreetingApp.dto.LoginDTO;
 import com.example.GreetingApp.dto.ResponseDTO;
 import com.example.GreetingApp.model.AuthUser;
 import com.example.GreetingApp.services.AuthenticationService;
+import com.example.GreetingApp.services.EmailSenderService;
 import com.example.GreetingApp.utility.JwtToken;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class AuthUserController {
     @Autowired
     JwtToken jwtUtility;
 
-
+    @Autowired
+    EmailSenderService emailService;
 
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> register(@Valid @RequestBody AuthUserDTO userDTO) throws Exception{

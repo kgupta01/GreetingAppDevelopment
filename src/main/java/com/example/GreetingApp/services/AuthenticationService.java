@@ -22,7 +22,8 @@ public class AuthenticationService implements IAuthenticationService {
     @Autowired
     AuthUserRepository authUserRepository;
 
-
+    @Autowired
+    EmailSenderService emailSenderService;
 
     @Autowired
     JwtToken tokenUtil;
@@ -35,6 +36,13 @@ public class AuthenticationService implements IAuthenticationService {
         user.setPassword(hashedPassword);
         authUserRepository.save(user);
         String token=tokenUtil.createToken(user.getUserId());
+        emailSenderService.sendEmail(user.getEmail(),"Registered in Greeting App", "Hii...."
+                +user.getFirstName()+"\n You have been successfully registered!\n\n Your registered details are:\n\n User Id:  "
+                +user.getUserId()+"\n First Name:  "
+                +user.getFirstName()+"\n Last Name:  "
+                +user.getLastName()+"\n Email:  "
+                +user.getEmail()+"\n Address:  "
+                +"\n Token:  " +token);
 
 
         return user;
@@ -45,7 +53,7 @@ public class AuthenticationService implements IAuthenticationService {
 
         Optional<AuthUser> user= Optional.ofNullable(authUserRepository.findByEmail(loginDTO.getEmail()));
         if (user.isPresent() && encoder.matches(loginDTO.getPassword(),user.get().getPassword())){
-            (user.get().getEmail(),"Logged in Successfully!", "Hii...."+user.get().getFirstName()+"\n\n You have successfully logged in into Greeting App!");
+            emailSenderService.sendEmail(user.get().getEmail(),"Logged in Successfully!", "Hii...."+user.get().getFirstName()+"\n\n You have successfully logged in into Greeting App!");
             return "Congratulations!! You have logged in successfully!";
         }else {
             throw new UserException("Sorry! Email or Password is incorrect!");
